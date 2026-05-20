@@ -117,9 +117,28 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebar-overlay');
+      const labels = document.querySelectorAll('.sidebar-label');
       
-      sidebar.classList.toggle('-translate-x-full');
-      overlay.classList.toggle('hidden');
+      if (window.innerWidth >= 1024) {
+        // Modo Desktop: Alterna a largura entre 56 (224px) e 20 (80px)
+        const isCollapsed = sidebar.classList.contains('lg:w-20');
+        
+        sidebar.classList.toggle('lg:w-56', isCollapsed);
+        sidebar.classList.toggle('lg:w-20', !isCollapsed);
+        
+        // Esconde ou mostra os textos e o botão interno
+        labels.forEach(label => {
+          // Usamos style.display para forçar o desaparecimento independente de classes lg: do Tailwind
+          label.style.display = !isCollapsed ? 'none' : '';
+        });
+      } else {
+        // Modo Mobile: Mantém o comportamento de abrir/fechar lateralmente
+        // Reset de estilos caso tenha vindo do modo desktop
+        labels.forEach(label => label.style.display = '');
+        
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      }
     }
 
     function closeSidebar() {
@@ -142,3 +161,25 @@
     document.addEventListener('DOMContentLoaded', function() {
       navigateTo('dashboard');
     });
+
+    // Função para simular a chegada de dados do Back-end
+function atualizarGrafico(dados) {
+  document.getElementById('bar-jan').style.height = dados.jan + '%';
+  document.getElementById('bar-fev').style.height = dados.fev + '%';
+  document.getElementById('bar-mar').style.height = dados.mar + '%';
+  document.getElementById('bar-abr').style.height = dados.abr + '%';
+  document.getElementById('bar-mai').style.height = dados.mai + '%';
+  document.getElementById('bar-jun').style.height = dados.jun + '%';
+}
+
+// Vamos simular uma atualização após 2 segundos para ver a animação acontecer:
+setTimeout(() => {
+  atualizarGrafico({
+    jan: 50,
+    fev: 90,
+    mar: 30,
+    abr: 70,
+    mai: 40,
+    jun: 85
+  });
+}, 2000);
