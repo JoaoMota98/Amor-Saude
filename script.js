@@ -152,10 +152,121 @@
     }
 
     // Prescription selection
-    function selectPrescription(id) {
-      console.log('Selected prescription:', id);
-      // Add visual feedback here if needed
+   // Base de dados simulada para as prescrições
+const dadosPrescricoes = {
+  1: {
+    nome: "João da Silva",
+    cpf: "334.***.***-89",
+    pedido: "#982374-26",
+    medicamentos: [
+      { nome: "Losartana 50mg", tipo: "Comprimido 50mg", lote: "L-1909C", qtd: "60 un" },
+      { nome: "Omeprazol 20mg", tipo: "Cápsula 20mg", lote: "L-2201B", qtd: "30 un" }
+    ]
+  },
+  2: {
+    nome: "Maria Oliveira",
+    cpf: "123.***.***-00",
+    pedido: "#881234-26",
+    medicamentos: [
+      { nome: "Dipirona 500mg", tipo: "Comprimido 500mg", lote: "L-2024A", qtd: "20 un" },
+      { nome: "Paracetamol 750mg", tipo: "Comprimido 750mg", lote: "L-2105D", qtd: "15 un" }
+    ]
+  },
+  3: {
+    nome: "Antônio Carlos",
+    cpf: "789.***.***-11",
+    pedido: "#774512-26",
+    medicamentos: [
+      { nome: "Metformina 850mg", tipo: "Comprimido 850mg", lote: "L-2011F", qtd: "90 un" }
+    ]
+  }
+};
+
+function selectPrescription(id) {
+  const dados = dadosPrescricoes[id];
+  if (!dados) return;
+
+  // 1. Limpa TODOS os cards primeiro
+  document.querySelectorAll('.presc-card').forEach(card => {
+    // Reseta card
+    card.classList.remove('border-accent', 'bg-accent/5');
+    card.classList.add('border-gray-200');
+
+    // Reseta ícone
+    const avatar = card.querySelector('.avatar-icon');
+    if (avatar) {
+      avatar.classList.remove('bg-yellow-500');
+      avatar.classList.add('bg-gray-400');
     }
+
+    // Reseta badge para cinza
+    const badge = card.querySelector('.status-badge');
+    if (badge) {
+      badge.classList.remove('bg-yellow-100', 'text-yellow-700');
+      badge.classList.add('bg-gray-100', 'text-gray-600');
+    }
+  });
+
+  // 2. Colore APENAS o card clicado
+  const cardSelecionado = document.getElementById(`card-presc-${id}`);
+  if (cardSelecionado) {
+    // Colore card
+    cardSelecionado.classList.remove('border-gray-200');
+    cardSelecionado.classList.add('border-accent', 'bg-accent/5');
+
+    // Colore ícone
+    const avatarSelecionado = cardSelecionado.querySelector('.avatar-icon');
+    if (avatarSelecionado) {
+      avatarSelecionado.classList.remove('bg-gray-400');
+      avatarSelecionado.classList.add('bg-yellow-500');
+    }
+
+    // Colore badge para amarelo
+    const badgeSelecionado = cardSelecionado.querySelector('.status-badge');
+    if (badgeSelecionado) {
+      badgeSelecionado.classList.remove('bg-gray-100', 'text-gray-600');
+      badgeSelecionado.classList.add('bg-yellow-100', 'text-yellow-700');
+    }
+  }
+
+  // 3. Atualiza o cabeçalho da tabela
+  document.getElementById('dispensacao-patient-info').textContent = 
+    `Pedido ${dados.pedido} • ${dados.nome} • CPF: ${dados.cpf}`;
+
+  // 4. Monta e injeta as linhas
+  const tableBody = document.getElementById('dispensacao-table-body');
+  tableBody.innerHTML = dados.medicamentos.map(med => `
+    <tr>
+      <td class="px-5 py-4">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span class="text-sm font-medium text-gray-900">${med.nome}</span>
+        </div>
+      </td>
+      <td class="px-5 py-4 text-sm text-gray-600">${med.tipo}</td>
+      <td class="px-5 py-4 text-sm text-gray-600">${med.lote}</td>
+      <td class="px-5 py-4">
+        <span class="flex items-center gap-1 text-sm text-accent font-medium">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          ${med.lote}
+        </span>
+      </td>
+      <td class="px-5 py-4 text-sm text-gray-900 font-medium">${med.qtd}</td>
+    </tr>
+  `).join('');
+}
+
+// Opcional: Chamar a função na inicialização para preencher a tabela com o primeiro paciente por padrão
+document.addEventListener('DOMContentLoaded', () => {
+  // O código de navegação existente...
+  if (document.getElementById('dispensacao-content')) {
+    selectPrescription(1);
+  }
+});
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
