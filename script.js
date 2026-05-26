@@ -36,6 +36,15 @@
         userAvatar: 'JC',
         avatarColor: 'bg-blue-500'
       },
+      recebimento: {
+        title: 'Recebimento de Insumos e Cargas',
+        subtitle: 'Conferência de Notas e Lotes',
+        sidebarTitle: 'Almoxarifado SUS',
+        userName: 'Dr. Admin',
+        userRole: 'CRM/SP 12.345',
+        userAvatar: 'DA',
+        avatarColor: 'bg-yellow-500'
+      },
       estoque: {
         title: 'Gestão de Estoque',
         subtitle: '',
@@ -294,3 +303,73 @@ setTimeout(() => {
     jun: 85
   });
 }, 2000);
+
+// Alterna a visibilidade do menu de usuário
+function toggleUserMenu(event) {
+  event.stopPropagation(); // Impede que o clique feche o menu no mesmo instante
+  const dropdown = document.getElementById('user-dropdown');
+  dropdown.classList.toggle('hidden');
+}
+
+// Fecha o menu de usuário ao clicar fora dele
+document.addEventListener('click', (event) => {
+  const dropdown = document.getElementById('user-dropdown');
+  const button = document.getElementById('user-menu-button');
+
+  // Verifica se o dropdown existe e não está escondido
+  if (dropdown && !dropdown.classList.contains('hidden')) {
+    // Se o clique não foi dentro do menu e não foi no botão de abrir, esconde.
+    if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+      dropdown.classList.add('hidden');
+    }
+  }
+});
+
+// Alterna a visibilidade do menu de usuário
+function toggleUserMenu(event) {
+  event.stopPropagation(); // Impede que o clique feche o menu no mesmo instante
+  const dropdown = document.getElementById('user-dropdown');
+  dropdown.classList.toggle('hidden');
+}
+
+// Fecha o menu de usuário ao clicar fora dele
+document.addEventListener('click', (event) => {
+  const dropdown = document.getElementById('user-dropdown');
+  const button = document.getElementById('user-menu-button');
+
+  // Verifica se o dropdown existe e não está escondido
+  if (dropdown && !dropdown.classList.contains('hidden')) {
+    // Se o clique não foi dentro do menu e não foi no botão de abrir, esconde.
+    if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+      dropdown.classList.add('hidden');
+    }
+  }
+});
+
+function atualizarContador() {
+  // Busca todos os checkboxes da tabela de prontuário que possuem a classe check-receita
+  const checkboxes = document.querySelectorAll('#prontuario-content .check-receita');
+  
+  // Conta quantos estão marcados
+  let selecionados = 0;
+  checkboxes.forEach(function(box) {
+    if (box.checked) {
+      selecionados++;
+    }
+  });
+
+  // Atualiza o texto na tela
+  const contadorTexto = document.getElementById('contador-receita');
+  if (contadorTexto) {
+    if (selecionados === 1) {
+      contadorTexto.textContent = '1 medicamento selecionado';
+    } else {
+      contadorTexto.textContent = selecionados + ' medicamentos selecionados';
+    }
+  }
+}
+
+// Garante que o número esteja correto assim que a página terminar de carregar
+document.addEventListener('DOMContentLoaded', () => {
+  atualizarContador();
+});
